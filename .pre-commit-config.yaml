@@ -37,7 +37,3 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
-  - repo: https://gitlab.com/devopshq/gitlab-ci-linter
-    rev: v1.0.3
-    hooks:
-      - id: gitlab-ci-linter
