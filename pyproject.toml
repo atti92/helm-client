@@ -1,5 +1,5 @@
 [project]
-name = "helmclient"
+name = "helm-client"
 requires-python = ">=3.7"
 readme = "README.md"
 description = "Helm client"
@@ -18,7 +18,7 @@ exclude = ["*.tests", "*.tests.*", "tests.*", "tests", "helm.tests*", "helm.test
 include = ["helm", "helm.*"]
 
 [tool.setuptools.dynamic]
-version = { attr = "helmclient._version.__version__" }
+version = { attr = "helm._version.__version__" }
 dependencies = { file = "requirements.txt" }
 
 [tool.pytest.ini_options]
