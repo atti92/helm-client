@@ -50,10 +50,10 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - uses: pre-commit/action@v3.0.0
-        name: pre-commit setup
+        name: pre-commit
 
       - name: Install tox
-        run: pip install tox
+        run: pip install --upgrade tox
 
       - name: tox
         run: tox
