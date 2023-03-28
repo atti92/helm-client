@@ -33,7 +33,7 @@ repos:
     rev: v0.33.0
     hooks:
       - id: markdownlint
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.259'
     hooks:
-      - id: flake8
+      - id: ruff
