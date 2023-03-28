@@ -1,6 +1,6 @@
 [project]
 name = "helmclient"
-requires-python = ">=3.11"
+requires-python = ">=3.7"
 readme = "README.md"
 description = "Helm client"
 dynamic = ["version", "dependencies"]
