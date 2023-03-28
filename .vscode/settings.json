@@ -21,11 +21,11 @@
             "source.organizeImports": true,
             "source.fixAll": true
         },
-        "editor.rulers": [ 120 ],
+        "editor.rulers": [ 120 ]
     },
     "workbench.colorCustomizations": {
         "titleBar.activeBackground": "#ff0000cc",
-        "titleBar.activeForeground": "#ffffff",
+        "titleBar.activeForeground": "#ffffff"
     },
 
     "files.trimTrailingWhitespace": true,
@@ -40,5 +40,5 @@
         "**/__pycache__": true,
         "**/.mypy_cache": true,
         "**/.pytest_cache": true
-    },
+    }
 }
