@@ -5,8 +5,8 @@ readme = "README.md"
 description = "Helm client"
 dynamic = ["version", "dependencies"]
 authors = [
-    "Attila Kobor <atti92@gmail.com>",
-    "Balazs Hamorszky <balihb@gmail.com>"
+    {name = "Attila Kobor", email = "atti92@gmail.com"},
+    {name = "Balazs Hamorszky", email = "balihb@gmail.com"}
 ]
 
 [build-system]
