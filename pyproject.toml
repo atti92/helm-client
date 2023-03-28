@@ -4,6 +4,10 @@ requires-python = ">=3.7"
 readme = "README.md"
 description = "Helm client"
 dynamic = ["version", "dependencies"]
+authors = [
+    "Attila Kobor <atti92@gmail.com>",
+    "Balazs Hamorszky <balihb@gmail.com>"
+]
 
 [build-system]
 requires = ["setuptools"]
