@@ -27,3 +27,6 @@ dependencies = { file = "requirements.txt" }
 
 [tool.pytest.ini_options]
 testpaths = ["helm/tests"]
+
+[tool.ruff]
+line-length = 120
