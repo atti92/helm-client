@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "helm-client"
+version = "0.1.0"
+description = ""
+authors = ["Attila Kobor <atti92@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "helm"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pydantic = "^1.10.7"
+packaging = "^23.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
