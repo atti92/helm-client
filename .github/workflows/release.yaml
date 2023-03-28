@@ -47,6 +47,10 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - uses: pre-commit/action@v3.0.0
+        name: pre-commit setup
+
+      - uses: azure/setup-helm@v3
+        name: Install Helm
 
       - name: Install tox
         run: pip install tox
