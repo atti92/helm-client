@@ -14,12 +14,12 @@ include-package-data = false
 
 [tool.setuptools.packages.find]
 namespaces = true
-exclude = ["*.tests", "*.tests.*", "tests.*", "tests", "helmclient.tests*", "helmclient.tests.*"]
-include = ["helmclient", "helmclient.*"]
+exclude = ["*.tests", "*.tests.*", "tests.*", "tests", "helm.tests*", "helm.tests.*"]
+include = ["helm", "helm.*"]
 
 [tool.setuptools.dynamic]
 version = { attr = "helmclient._version.__version__" }
 dependencies = { file = "requirements.txt" }
 
 [tool.pytest.ini_options]
-testpaths = ["helmclient/tests"]
+testpaths = ["helm/tests"]
