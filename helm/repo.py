@@ -55,7 +55,7 @@ def list(*args, **kwargs) -> List[HelmRepo]:
     """
     https://helm.sh/docs/helm/helm_repo_list/
     """
-    data = subcommand_run("list", *args, **kwargs).stdout
+    data = subcommand_run("list", *args, "-o", "json", **kwargs).stdout
     return pydantic.parse_raw_as(List[HelmRepo], data or "[]")
 
 
