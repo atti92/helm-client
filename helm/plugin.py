@@ -1,26 +1,25 @@
-from .common import helm_exec as helm_exec
-from .common import kwargs_to_args
+from .common import helm_run, normalize_args
 
 
-def exec(*args):
-    return helm_exec("plugin", *args)
+def subcommand_run(*args, **kwargs):
+    return helm_run("plugin", *args, **kwargs)
 
 
 def install(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("install", *args)
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("install", *args, **kwargs)
 
 
 def list(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("list", *args)
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("list", *args, **kwargs)
 
 
 def uninstall(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("uninstall", *args)
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("uninstall", *args, **kwargs)
 
 
 def update(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("update", *args)
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("update", *args, **kwargs)

@@ -1,61 +1,75 @@
 import subprocess
+from typing import List
 
-from pydantic import BaseModel, AnyUrl, HttpUrl
+import pydantic
+from pydantic import AnyUrl
 
-from helm.common import subprocess_run
+from helm.common import helm_run, normalize_args
+
+from .models import HelmRepo
 
 
 class OciUrl(AnyUrl):
-    allowed_schemes = {'oci'}
+    allowed_schemes = {"oci"}
 
     __slots__ = ()
 
 
-class HelmRepo(BaseModel):
-    name: str
-    url: HttpUrl | OciUrl
-
-    def __hash__(self):
-        return hash((type(self),) + tuple(self.__dict__.values()))
+def subcommand_run(*args, **kwargs):
+    return helm_run("repo", *args, **kwargs)
 
 
 def add(
-    helm_repo: HelmRepo,
-    username: str | None = None,
-    password: str | None = None,
-    force_update: bool = False
+    helm_repo: HelmRepo, username: str | None = None, password: str | None = None, force_update: bool = False, **kwargs
 ) -> subprocess.CompletedProcess:
     """
     https://helm.sh/docs/helm/helm_repo_add/
 
-    :param HelmRepo helm_repo: helm repository definition
-    :param username: chart repository username
-    :param password: chart repository password
-    :param force_update: replace (overwrite) the repo if it already exists
-    :return: CompletedProcess
-    :rtype: subprocess.CompletedProcess
+    Args:
+        helm_repo: helm repository definition
+        username: chart repository username
+        password: chart repository password
+        force_update: replace (overwrite) the repo if it already exists
     """
-    cmd = ["helm", "repo", "add", helm_repo.name, str(helm_repo.url)]
-    if username is not None:
-        cmd.extend(["--username", username])
-    if password is not None:
-        cmd.append("--password-stdin")
-    if force_update:
-        cmd.append("--force-update")
+    args = normalize_args(username=username, password=password, force_update=force_update)
 
-    cp = subprocess_run(cmd, input=password, check=True, text=True, capture_output=True)
-
+    cp = subcommand_run(
+        "add",
+        helm_repo.name,
+        str(helm_repo.url),
+        *args,
+        **kwargs,
+    )
     return cp
 
-def update() -> subprocess.CompletedProcess:
+
+def index(*args, **kwargs) -> subprocess.CompletedProcess:
+    """
+    https://helm.sh/docs/helm/helm_repo_index/
+    """
+    cp = subcommand_run("index", *args, **kwargs)
+    return cp
+
+
+def list(*args, **kwargs) -> List[HelmRepo]:
+    """
+    https://helm.sh/docs/helm/helm_repo_list/
+    """
+    data = subcommand_run("list", *args, **kwargs).stdout
+    return pydantic.parse_raw_as(List[HelmRepo], data or "[]")
+
+
+def remove(*args, **kwargs) -> subprocess.CompletedProcess:
+    """
+    https://helm.sh/docs/helm/helm_repo_remove/
+    """
+    cp = subcommand_run("remove", *args, **kwargs)
+    return cp
+
+
+def update(*args, **kwargs) -> subprocess.CompletedProcess:
     """
     https://helm.sh/docs/helm/helm_repo_update/
-
-    :return: CompletedProcess
-    :rtype: subprocess.CompletedProcess
-    """""
-    cmd = ["helm", "repo", "update"]
-
-    cp = subprocess_run(cmd, check=True, text=True, capture_output=True)
-
+    """
+    cp = subcommand_run("update", *args, **kwargs)
     return cp

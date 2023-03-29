@@ -1,21 +1,23 @@
-from .common import helm_exec as helm_exec
-from .common import kwargs_to_args
+from .common import helm_run, normalize_args
 
 
-def exec(*args):
-    return helm_exec("dependency", *args)
+def subcommand_run(*args, **kwargs):
+    return helm_run("dependency", *args, **kwargs)
 
 
 def build(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("build", *args)
+    """https://helm.sh/docs/helm/helm_dependency_build"""
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("build", *args, **kwargs)
 
 
 def list(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("list", *args)
+    """https://helm.sh/docs/helm/helm_dependency_list"""
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("list", *args, **kwargs)
 
 
 def update(*args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("update", *args)
+    """https://helm.sh/docs/helm/helm_dependency_update"""
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("update", *args, **kwargs)

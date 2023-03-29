@@ -1,36 +1,43 @@
-from .common import helm_exec as helm_exec
-from .common import kwargs_to_args
+from typing import Iterable
+
+import yaml
+
+from .common import helm_run, normalize_args
 
 
-def exec(*args):
-    return helm_exec("get", *args)
+def subcommand_run(*args, **kwargs):
+    return helm_run("get", *args, **kwargs)
 
 
-def all(*args, **kwargs):
-    """download all information for a named release"""
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("all", *args)
+def all(*args, **kwargs) -> str:
+    """https://helm.sh/docs/helm/helm_get_all"""
+    args = normalize_args(*args, **kwargs)
+    data = subcommand_run("all", *args, **kwargs).stdout
+    return data
 
 
-def hooks(*args, **kwargs):
-    """download all hooks for a named release"""
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("hooks", *args)
+def hooks(release: str, *args, **kwargs) -> Iterable[dict]:
+    """https://helm.sh/docs/helm/helm_get_hooks"""
+    args = normalize_args(*args, **kwargs)
+    data = subcommand_run("hooks", release, *args, **kwargs).stdout
+    return yaml.safe_load_all(data)
 
 
-def manifest(*args, **kwargs):
-    """download the manifest for a named release"""
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("manifest", *args)
+def manifest(release: str, *args, **kwargs) -> Iterable[dict]:
+    """https://helm.sh/docs/helm/helm_get_manifest"""
+    args = normalize_args(*args, **kwargs)
+    data = subcommand_run("manifest", release, *args, **kwargs).stdout
+    return yaml.safe_load_all(data)
 
 
-def notes(*args, **kwargs):
-    """download the notes for a named release"""
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("notes", *args)
+def notes(release: str, *args, **kwargs):
+    """https://helm.sh/docs/helm/helm_get_notes"""
+    args = normalize_args(*args, **kwargs)
+    return subcommand_run("notes", release, *args, **kwargs)
 
 
-def values(*args, **kwargs):
-    """download the values file for a named release"""
-    args = kwargs_to_args(*args, **kwargs)
-    return exec("values", *args)
+def values(release: str, *args, **kwargs) -> dict:
+    """https://helm.sh/docs/helm/helm_get_values"""
+    args = normalize_args(*args, **kwargs)
+    data = subcommand_run("values", release, *args, **kwargs).stdout
+    return yaml.safe_load(data)

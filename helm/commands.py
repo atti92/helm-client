@@ -5,15 +5,14 @@ from typing import List, Optional
 
 import pydantic
 
-from .common import helm_exec, kwargs_to_args
+from .common import helm_run, normalize_args
 from .models import HelmRelease, HelmReleaseStatus
 
 
-def env():
+def env(**kwargs):
     """Get the helm client environment information"""
     return {
-        line.split("=")[0]: line.split("=")[1].strip("'\"")
-        for line in helm_exec("env").stdout.splitlines()
+        line.split("=")[0]: line.split("=")[1].strip("'\"") for line in helm_run("env", **kwargs).stdout.splitlines()
     }
 
 
@@ -25,8 +24,8 @@ def create(name: str, *args, starter: Optional[str | Path] = None, **kwargs):
         name: Path to create the chart.
         starter: The name or absolute path to Helm starter scaffold.
     """
-    args = kwargs_to_args(starter=starter, *args, **kwargs)
-    return helm_exec("create", name, *args).stdout
+    args = normalize_args(starter=starter, *args, **kwargs)
+    return helm_run("create", name, *args, **kwargs).stdout
 
 
 def history(name: str, *args, max: Optional[int] = None, namespace: Optional[str] = None, **kwargs):
@@ -37,19 +36,19 @@ def history(name: str, *args, max: Optional[int] = None, namespace: Optional[str
         max: A default maximum of 256 revisions will be returned. Setting this configures
             the maximum length of the revision list returned.
     """
-    args = kwargs_to_args(*args, max=max, namespace=namespace, **kwargs)
-    data = helm_exec("history", name, "-o", "json", *args)
+    args = normalize_args(*args, max=max, namespace=namespace, **kwargs)
+    data = helm_run("history", name, "-o", "json", *args, **kwargs)
     return pydantic.parse_raw_as(List[HelmRelease], data.stdout)
 
 
 def install(name: str, chart: str, *args, namespace: Optional[str] = None, **kwargs):
-    args = kwargs_to_args(*args, namespace=namespace, **kwargs)
-    return helm_exec("install", name, chart, "-o", "json", *args)
+    args = normalize_args(*args, namespace=namespace, **kwargs)
+    return helm_run("install", name, chart, "-o", "json", *args, **kwargs)
 
 
 def lint(path: str, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("lint", path, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("lint", path, *args, **kwargs)
 
 
 def list(
@@ -76,7 +75,7 @@ def list(
             supports '=', '==', and '!='.(e.g. -l key1=value1,key2=value2).
             Works only for secret(default) and configmap storage backends.
     """
-    args = kwargs_to_args(
+    args = normalize_args(
         *args,
         namespace=namespace,
         status=status,
@@ -87,8 +86,8 @@ def list(
         selector=selector,
         **kwargs,
     )
-    data = helm_exec("list", *args, "-o", "json", "--time-format", "2006-01-02T15:04:05")
-    return pydantic.parse_raw_as(List[HelmRelease], data.stdout)
+    data = helm_run("list", *args, "-o", "json", "--time-format", "2006-01-02T15:04:05")
+    return pydantic.parse_raw_as(List[HelmRelease], data.stdout, **kwargs)
 
 
 def package(path: str, *args, **kwargs):
@@ -96,55 +95,55 @@ def package(path: str, *args, **kwargs):
     is given, this will look at that path for a chart (which must contain a
     Chart.yaml file) and then package that directory.
     """
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("package", path, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("package", path, *args, **kwargs)
 
 
 def pull(chart: str, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("pull", chart, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("pull", chart, *args, **kwargs)
 
 
 def push(chart, remote, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("push", chart, remote, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("push", chart, remote, *args, **kwargs)
 
 
 def rollback(release: str, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("rollback", release, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("rollback", release, *args, **kwargs)
 
 
 def status(release: str, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("status", release, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("status", release, *args, **kwargs)
 
 
 def template(name, chart, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("template", name, chart, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("template", name, chart, *args, **kwargs)
 
 
 def test(release, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("test", release, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("test", release, *args, **kwargs)
 
 
 def uninstall(release, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("uninstall", release, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("uninstall", release, *args, **kwargs)
 
 
 def upgrade(release, chart, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("upgrade", release, chart, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("upgrade", release, chart, *args, **kwargs)
 
 
 def verify(path, *args, **kwargs):
-    args = kwargs_to_args(*args, **kwargs)
-    return helm_exec("verify", path, *args)
+    args = normalize_args(*args, **kwargs)
+    return helm_run("verify", path, *args, **kwargs)
 
 
-def version():
+def version(**kwargs):
     """Get the helm client version information"""
-    return helm_exec("version", "--short").stdout.strip()
+    return helm_run("version", "--short", **kwargs).stdout.strip()
